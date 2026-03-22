@@ -2,7 +2,13 @@
 
 > Extract project knowledge into structured Markdown documents without copying source code.
 
-A Codex/GStack skill that analyzes source code to generate architecture docs, API docs, database design, and flow diagrams. Designed for knowledge transfer when employees leave a company - they can take the documentation, not the code.
+A AI coding assistant skill that analyzes source code to generate architecture docs, API docs, database design, and flow diagrams. Designed for knowledge transfer when employees leave a company - they can take the documentation, not the code.
+
+## Supported Platforms
+
+- **Claude Code** - Use `/project-dumper` or describe your need
+- **Codex** - Use `/project-dumper` or describe your need
+- **GStack** - Use `/project-dumper` or describe your need
 
 ## Use Case
 
@@ -21,8 +27,9 @@ This is **knowledge transfer**, not code theft.
 - **Automatic Analysis** - Scans project structure, detects language/framework
 - **Multi-document Output** - README, ARCHITECTURE, API, DATABASE, FLOWS
 - **Mermaid Diagrams** - Architecture diagrams, flow charts, state machines
-- **Codex/GStack Skill** - Easy to use with AI coding assistants
+- **AI Skill** - Easy to use with AI coding assistants (Claude Code, Codex, GStack)
 - **No Code Copying** - Only generates documentation, not source code
+- **Reverse Engineering Friendly** - Detailed enough to rebuild the project
 
 ## Usage
 
@@ -69,6 +76,13 @@ See the `examples/` directory for sample output.
 
 ## Installation
 
+### For Claude Code
+
+```bash
+# Copy SKILL.md to your Claude Code skills directory
+cp SKILL.md ~/.claude/skills/project-dumper/
+```
+
 ### For Codex
 
 ```bash
@@ -85,8 +99,8 @@ cp SKILL.md ~/.claude/skills/project-dumper/
 
 ## Technical Details
 
-- **Language**: Skill definition (works with Codex/GStack)
-- **Framework**: Codex Skill API / GStack
+- **Language**: Skill definition (works with Claude Code, Codex, GStack)
+- **Framework**: AI Assistant Skill API
 - **Output**: Markdown files with Mermaid diagrams
 
 ## Why This Tool?
@@ -95,6 +109,7 @@ cp SKILL.md ~/.claude/skills/project-dumper/
 2. **Knowledge Transfer** - Preserves design intent and business logic
 3. **Interview Prep** - Great for preparing project summaries
 4. **Onboarding** - Helps new team members understand the system
+5. **Reverse Engineering** - Detailed enough to rebuild the project
 
 ## License
 

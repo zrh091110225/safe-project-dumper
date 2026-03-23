@@ -113,6 +113,16 @@ cp SKILL.md ~/.claude/skills/project-dumper/
 4. **Onboarding** - Helps new team members understand the system
 5. **Reverse Engineering** - Detailed enough to rebuild the project
 
+## Disclaimer / 免责声明
+
+This tool is provided **free of charge** for legitimate knowledge-transfer and documentation purposes only.
+
+Any use involving unauthorized access, data theft, credential abuse, privacy violations, or any other illegal activity is strictly prohibited.  
+Users are solely responsible for how they use this tool and for complying with all applicable laws, company policies, and contractual obligations.  
+The authors and contributors assume **no liability** for any losses, damages, legal disputes, or consequences arising from misuse, including but not limited to theft of information or other unlawful conduct.
+
+For stricter legal wording in Chinese, see [DISCLAIMER.md](./DISCLAIMER.md).
+
 ## License
 
 MIT

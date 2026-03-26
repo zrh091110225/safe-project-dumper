@@ -105,12 +105,15 @@ cp SKILL.md ~/.claude/skills/project-dumper/
 - **Framework**: AI Assistant Skill API
 - **Output**: Markdown files with Mermaid diagrams
 
-## Offline QR Split Tool
+## Optional: Offline QR Split Tool
 
-This repository now includes an offline document splitting tool for multi-QR workflows:
+This repository includes an optional offline document splitting workflow for multi-QR transfer.
+
+Use this mode when direct file export is blocked by stricter company security controls.  
+In that case, you can convert one document into ordered QR chunks, move them by scanning, and rebuild the original content on another side.
 
 - Script: `tools/offline_qr_bundle.py`
-- Mode: pure offline, split one document into multiple QR payloads
+- Mode: optional pure-offline transfer path (split one document into multiple QR payloads)
 - Ordering: filename + embedded index (`name__003-of-012`)
 - Integrity: chunk CRC32 + full document SHA256
 

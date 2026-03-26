@@ -114,6 +114,14 @@ This repository now includes an offline document splitting tool for multi-QR wor
 - Ordering: filename + embedded index (`name__003-of-012`)
 - Integrity: chunk CRC32 + full document SHA256
 
+### How It Works
+
+1. Read the input document as bytes
+2. Compress once (zlib)
+3. Split compressed bytes into chunks that fit `--max-qr-chars`
+4. Write one payload per chunk (`.txt`, and optional `.png`)
+5. Rebuild by collecting all chunks, validating CRC/SHA256, then decompressing
+
 ### Pack (split to chunks + payload files)
 
 ```bash
@@ -129,6 +137,19 @@ Notes:
 - By default, the tool writes `.txt` payloads for each chunk.
 - If you want PNG QR images, remove `--no-png` and install dependency:
   `pip install qrcode[pil]`
+- For camera scanning stability, start with `--max-qr-chars 600~1200`.
+
+### Pack Parameters
+
+| Param | Description | Default |
+|------|-------------|---------|
+| `--input` | Input document path | Required |
+| `--outdir` | Output directory for chunk files | Required |
+| `--name` | Chunk filename prefix | input filename stem |
+| `--max-qr-chars` | Max characters per QR payload | `1200` |
+| `--compress-level` | zlib compression level (`0-9`) | `9` |
+| `--ecc` | QR error correction (`L/M/Q/H`) | `M` |
+| `--no-png` | Write text payload only (no PNG) | disabled |
 
 ### Unpack (reassemble)
 
@@ -136,6 +157,41 @@ Notes:
 python3 tools/offline_qr_bundle.py unpack \
   --indir ./out/qr-chunks \
   --output ./out/recovered-ARCHITECTURE.md
+```
+
+Optional:
+- `--doc-id <id>` to rebuild only one target document when multiple docs are mixed in one directory.
+
+### Output Files
+
+- `name__001-of-016.txt`: QR payload text for one chunk
+- `name__001-of-016.png`: QR image (only when not using `--no-png`)
+- `name__manifest.json`: metadata summary (chunk count, config)
+
+### Verification and Failure Cases
+
+- Missing chunks: unpack fails with a clear missing-index error
+- Mixed documents: unpack fails on metadata mismatch
+- Tampered payload: unpack fails on chunk CRC or doc SHA256 mismatch
+
+### End-to-End Example
+
+```bash
+# pack
+python3 tools/offline_qr_bundle.py pack \
+  --input README.md \
+  --outdir ./out/qr-demo \
+  --name readme \
+  --max-qr-chars 350 \
+  --no-png
+
+# rebuild
+python3 tools/offline_qr_bundle.py unpack \
+  --indir ./out/qr-demo \
+  --output ./out/recovered-README.md
+
+# verify
+shasum -a 256 README.md ./out/recovered-README.md
 ```
 
 ## Why This Tool?

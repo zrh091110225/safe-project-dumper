@@ -369,9 +369,11 @@ def build_parser() -> argparse.ArgumentParser:
     p_pack.add_argument("--ecc", default="M", choices=["L", "M", "Q", "H"], help="QR error correction level")
     p_pack.add_argument("--no-png", action="store_true", help="Only write .txt payloads")
     p_pack.add_argument(
-        "--auto-install-qrcode",
-        action="store_true",
-        help="Auto install qrcode[pil] when PNG generation is requested and dependency is missing",
+        "--no-auto-install-qrcode",
+        dest="auto_install_qrcode",
+        action="store_false",
+        default=True,
+        help="Disable auto install of qrcode[pil] when PNG generation is requested and dependency is missing",
     )
     p_pack.set_defaults(func=cmd_pack)
 

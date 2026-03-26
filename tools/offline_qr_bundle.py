@@ -243,10 +243,26 @@ def _ensure_qrcode(auto_install: bool) -> tuple[bool, str | None]:
     if not auto_install:
         return False, "qrcode library not found; writing .txt payloads only"
 
-    cmd = [sys.executable, "-m", "pip", "install", "qrcode[pil]"]
-    proc = subprocess.run(cmd, capture_output=True, text=True)
-    if proc.returncode != 0:
-        tail = (proc.stderr or proc.stdout or "").strip().splitlines()
+    install_attempts = [
+        [sys.executable, "-m", "pip", "install", "qrcode[pil]"],
+        [sys.executable, "-m", "pip", "install", "--user", "qrcode[pil]"],
+        [sys.executable, "-m", "pip", "install", "--break-system-packages", "qrcode[pil]"],
+    ]
+    last_output = ""
+    for cmd in install_attempts:
+        proc = subprocess.run(cmd, capture_output=True, text=True)
+        combined = f"{proc.stdout}\n{proc.stderr}".strip()
+        if proc.returncode == 0:
+            break
+        last_output = combined
+    else:
+        low = last_output.lower()
+        if "pep 668" in low or "externally-managed-environment" in low:
+            return (
+                False,
+                "auto-install blocked by PEP 668; use a virtualenv or install qrcode manually, writing .txt payloads only",
+            )
+        tail = last_output.splitlines()
         detail = tail[-1] if tail else "unknown pip error"
         return False, f"auto-install failed ({detail}); writing .txt payloads only"
 

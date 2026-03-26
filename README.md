@@ -141,6 +141,7 @@ Notes:
 - If `qrcode[pil]` is installed and you do not set `--no-png`, PNG QR images will be generated.
 - If `qrcode[pil]` is missing, the command now degrades gracefully to `.txt` payload only (with warning).
 - Add `--auto-install-qrcode` if you want the tool to run `pip install qrcode[pil]` automatically when missing.
+- On Python environments with PEP 668 restrictions, auto-install may be blocked; use a virtualenv if needed.
 - For camera scanning stability, start with `--max-qr-chars 600~1200`.
 
 ### Pack Parameters

@@ -138,8 +138,9 @@ python3 tools/offline_qr_bundle.py pack \
 
 Notes:
 - By default, the tool writes `.txt` payloads for each chunk.
-- If you want PNG QR images, remove `--no-png` and install dependency:
-  `pip install qrcode[pil]`
+- If `qrcode[pil]` is installed and you do not set `--no-png`, PNG QR images will be generated.
+- If `qrcode[pil]` is missing, the command now degrades gracefully to `.txt` payload only (with warning).
+- Add `--auto-install-qrcode` if you want the tool to run `pip install qrcode[pil]` automatically when missing.
 - For camera scanning stability, start with `--max-qr-chars 600~1200`.
 
 ### Pack Parameters
@@ -153,6 +154,7 @@ Notes:
 | `--compress-level` | zlib compression level (`0-9`) | `9` |
 | `--ecc` | QR error correction (`L/M/Q/H`) | `M` |
 | `--no-png` | Write text payload only (no PNG) | disabled |
+| `--auto-install-qrcode` | Auto install `qrcode[pil]` if PNG is requested and dependency is missing | disabled |
 
 ### Unpack (reassemble)
 

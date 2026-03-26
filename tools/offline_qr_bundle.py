@@ -17,6 +17,7 @@ import hashlib
 import json
 import pathlib
 import re
+import subprocess
 import sys
 import zlib
 from dataclasses import dataclass
@@ -232,6 +233,30 @@ def _write_qr_png(payload: str, path: pathlib.Path, ecc: str) -> None:
     img.save(path)
 
 
+def _ensure_qrcode(auto_install: bool) -> tuple[bool, str | None]:
+    try:
+        import qrcode  # noqa: F401
+        return True, None
+    except Exception:
+        pass
+
+    if not auto_install:
+        return False, "qrcode library not found; writing .txt payloads only"
+
+    cmd = [sys.executable, "-m", "pip", "install", "qrcode[pil]"]
+    proc = subprocess.run(cmd, capture_output=True, text=True)
+    if proc.returncode != 0:
+        tail = (proc.stderr or proc.stdout or "").strip().splitlines()
+        detail = tail[-1] if tail else "unknown pip error"
+        return False, f"auto-install failed ({detail}); writing .txt payloads only"
+
+    try:
+        import qrcode  # noqa: F401
+        return True, None
+    except Exception:
+        return False, "auto-install completed but qrcode import still failed; writing .txt payloads only"
+
+
 def cmd_pack(args: argparse.Namespace) -> int:
     input_path = pathlib.Path(args.input)
     out_dir = pathlib.Path(args.outdir)
@@ -245,12 +270,20 @@ def cmd_pack(args: argparse.Namespace) -> int:
     total = len(payloads)
     width = max(3, len(str(total)))
 
+    png_enabled = not args.no_png
+    png_error: str | None = None
+
+    if png_enabled:
+        png_enabled, png_error = _ensure_qrcode(auto_install=args.auto_install_qrcode)
+        if png_error:
+            print(f"Warning: {png_error}", file=sys.stderr)
+
     for idx, payload in enumerate(payloads, start=1):
         base = f"{name}__{idx:0{width}d}-of-{total:0{width}d}"
         txt_path = out_dir / f"{base}.txt"
         txt_path.write_text(payload, encoding="utf-8")
 
-        if not args.no_png:
+        if png_enabled:
             png_path = out_dir / f"{base}.png"
             _write_qr_png(payload, png_path, args.ecc)
 
@@ -261,7 +294,10 @@ def cmd_pack(args: argparse.Namespace) -> int:
         "max_qr_chars": args.max_qr_chars,
         "compress_level": args.compress_level,
         "ecc": args.ecc,
+        "png_enabled": png_enabled,
     }
+    if png_error:
+        manifest["png_note"] = png_error
     (out_dir / f"{name}__manifest.json").write_text(
         json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8"
     )
@@ -316,6 +352,11 @@ def build_parser() -> argparse.ArgumentParser:
     p_pack.add_argument("--compress-level", type=int, default=9, help="zlib level 0-9")
     p_pack.add_argument("--ecc", default="M", choices=["L", "M", "Q", "H"], help="QR error correction level")
     p_pack.add_argument("--no-png", action="store_true", help="Only write .txt payloads")
+    p_pack.add_argument(
+        "--auto-install-qrcode",
+        action="store_true",
+        help="Auto install qrcode[pil] when PNG generation is requested and dependency is missing",
+    )
     p_pack.set_defaults(func=cmd_pack)
 
     p_unpack = sub.add_parser("unpack", help="Rebuild file from chunk payloads")

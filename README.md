@@ -2,8 +2,6 @@
 
 > Extract project knowledge into structured Markdown documents without copying source code.
 
-![safe-project-dumper](https://minimax-algeng-chat-tts.oss-cn-wulanchabu.aliyuncs.com/ccv2%2F2026-03-22%2FMiniMax-M2%2F2028668750999327086%2Fd786eb112a8c2f5f3e72c5b6b4536b7bbe3d9d83cb5a9c7aa3e59271688f1e54..png?Expires=1774249980&OSSAccessKeyId=LTAI5tGLnRTkBjLuYPjNcKQ8&Signature=s%2Fhu49zs6Dh7CjAsWUxr2ZD0cqQ%3D)
-
 A AI coding assistant skill that analyzes source code to generate architecture docs, API docs, database design, and flow diagrams. Designed for knowledge transfer when employees leave a company - they can take the documentation, not the code.
 
 ## Supported Platforms
